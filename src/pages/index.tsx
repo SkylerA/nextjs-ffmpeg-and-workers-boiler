@@ -22,7 +22,10 @@ export default function Home() {
 
     const ffmpeg = createFFmpeg({
       log: true,
+      // When developing locally it helps to host the file or load core from an external source
       corePath: "https://unpkg.com/@ffmpeg/core@0.11.0/dist/ffmpeg-core.js",
+      // to host locally, copy the core file to your public dir (cp node_modules/@ffmpeg/core/dist/* ./public/) and then use the corePath below
+      // corePath: "http://localhost:3000/ffmpeg-core.js",
     });
     ffmpeg
       .load()
