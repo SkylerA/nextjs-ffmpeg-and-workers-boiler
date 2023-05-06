@@ -1,3 +1,56 @@
+# ffmpeg/worker setup
+> **_NOTE:_**  This is my experimentation with working around CORS issues when using ffmpeg.wasm and web workers. This approach might not be ideal.
+- Install FFmpeg.wasm
+    - `npm install @ffmpeg/ffmpeg @ffmpeg/core`
+- enable CORS so FFMPEG can use SharedBuffer
+    
+    Add the following to the nextConfig object in next.config.js
+    ```
+    async headers() {
+        return [
+        {
+            source: "/",
+            headers: [
+            {
+                key: "Cross-Origin-Embedder-Policy",
+                value: "require-corp",
+            },
+            {
+                key: "Cross-Origin-Opener-Policy",
+                value: "same-origin",
+            },
+            ],
+        },
+        ];
+    },
+    ```
+- Put your worker (example.worker.js) file in public
+- Create an api path that will serve the file from public when requested. This will resolve CORS issues when creating the worker.
+  
+  Create `pages/api/<some_name>.js`
+   ```
+    import fs from "fs";
+    import path from "path";
+    import { NextApiResponse } from "next";
+
+    export default async function handler(req, res) {
+    const filePath = path.join(process.cwd(), "public", "example.worker.js");
+    const fileContent = fs.readFileSync(filePath, "utf-8");
+
+    res.setHeader("Access-Control-Allow-Origin", "*");
+    res.setHeader("Content-Type", "application/javascript");
+    res.setHeader("Cross-Origin-Embedder-Policy", "require-corp");
+    res.setHeader("Cross-Origin-Opener-Policy", "same-origin");
+
+    res.status(200).send(fileContent);
+    }
+    ```
+- See useEffect in index.tsx for bootstrap of worker and ffmpeg
+- No visual feedback on the page, check console for ffmpeg loaded and worker messages
+
+
+# Regular Next.js Docs Below
+
 This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
 
 ## Getting Started
