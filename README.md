@@ -1,5 +1,6 @@
 # ffmpeg/worker setup
 > **_NOTE:_**  This is my experimentation with working around CORS issues when using ffmpeg.wasm and web workers. This approach might not be ideal.
+> 
 > **_NOTE:_**  This was written when ffmpeg.wasm was at version 0.11.6, it has since had a major update with some changes in how you use it so this boilerplate might not work with the new version.
 - Install FFmpeg.wasm
     - `npm install @ffmpeg/ffmpeg @ffmpeg/core`
